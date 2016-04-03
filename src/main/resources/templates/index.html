@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Main</title>
+</head>
+<body style="background-color: red">
+
+<p id="p">Some text</p>
+
+<p onclick="load()">funkcja</p>
+
+</body>
+
+<script>
+    function load() {
+        alert("funkcja");
+        var request = new XMLHttpRequest();
+        var url = "http://localhost:8080/dupa";
+        request.onreadystatechange = function() {
+            alert("onready");
+            if (request.readyState === 4 &amp;&amp; request.status === 200) {
+                alert(request.responseText);
+            }
+        };
+        request.open("GET", url, true);
+        request.send();
+    }
+
+    load();
+</script>
+
+</html>
