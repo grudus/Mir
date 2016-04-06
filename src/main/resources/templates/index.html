@@ -2,14 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 
+    <link href="../static/css/index.css" th:href="@{/css/index.css}" rel="stylesheet" type="text/css"/>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css' />
     <script src="../static/js/index.js" th:src="@{/js/index.js}"></script>
     <meta charset="UTF-8" />
     <title>Main</title>
 </head>
-<body style="background-color: red">
+<body>
 
-<p id="p">Some text</p>
+<div id="main_top_div">
+    <div id="left_side"></div>
+    <div id="right_side">
+        <ul>
+            <li>
+                <a href="/mylogin">LOGIN</a>
+            </li>
+            <li>
+                <a href="/profile">MY PROFILE</a>
+            </li>
 
+        </ul>
+    </div>
+</div>
+
+<div class="writing_message">
+    <form method="post" id="adding_message">
+        <textarea placeholder="message..." style="resize: none" name="message"></textarea>
+        <input type="button" value="Send" onclick="sendMessage()"/>
+    </form>
+</div>
+
+<div id="all_messages">
+    <div class="one_message">
+        <div class="who_and_when">
+            <p>anon</p>
+            <p>13.13.2015 13:42</p>
+        </div>
+        <div class="actual_message">
+            <p> <a href="/tag/seba">#seba</a>  <a href="/tag/mati">#mati</a> <a href="/tag/kwadrat">#kwadrat</a>
+                <br/> His palms are spaghetti, knees weak, arms spaghetti
+                There's vomit on his spaghetti already: mom's spaghetti </p>
+        </div>
+    </div>
+</div>
 
 </body>
 

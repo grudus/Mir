@@ -1,0 +1,114 @@
+body {
+    background-color: #FCFFC1;
+    margin: 0;
+    padding: 0;
+    font-family: 'Raleway', sans-serif;
+}
+ul {
+    font-size: 2.25em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+    overflow: hidden;
+    text-align: center;
+    height: 100%;
+
+}
+
+li {
+    display: table-cell;
+    *float: left;
+    overflow: hidden;
+    /*vertical-align: middle;*/
+
+}
+
+a {
+    text-decoration: none;
+}
+
+li > a {
+    width: 100%;
+    display: block;
+    height: 100%;
+    position: relative;
+    color: #1DAD9B;
+}
+
+li > a:hover {
+    background-color: #1DAD9B;
+    color: #346357;
+}
+
+
+#main_top_div {
+    /*background-color: #1DAD9B;*/
+    background-color: #346357;
+    width: 100%;
+    height: 3.5em;
+}
+
+#left_side {
+    display: inline-block;
+    float: left;
+
+}
+
+#right_side {
+    float: right;
+    width: 50%;
+    height: 100%;
+}
+
+.writing_message {
+    height: 20em;
+    width: 50%;
+    margin: 1em auto 0 auto;
+    background-color: #9BF4D5;
+    border: solid #346357 .25em;
+    text-align: center;
+}
+
+#adding_message > input {
+    width: 80%;
+    margin: 1em auto 0 auto;
+    font-size: 1.5em;
+}
+
+#adding_message > textarea {
+    width: 80%;
+    margin: 2em auto 0 auto;
+    font-size: 1em;
+    height: 10em;
+}
+
+#all_messages {
+    margin-top: 5em;
+}
+
+.one_message {
+    margin: 1em auto 0 auto;
+    width: 80%;
+    border: #346357 solid;
+    background-color: #1DAD9B;
+}
+
+.who_and_when {
+    text-align: center;
+}
+
+.who_and_when > p{
+    display: inline;
+}
+
+.actual_message {
+    margin-left: 1em;
+}
+
+.actual_message > p > a {
+    /*color: #346357;*/
+}
+

@@ -1,14 +1,13 @@
 package com.grudus.dao;
 
-import com.grudus.entities.User;
+import com.grudus.entities.Message;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String> {
+public interface MessageRepository extends MongoRepository<Message, String> {
 
-    Optional<User> findByLogin(String login);
+    Collection<Message> findByTags(String tag);
 }

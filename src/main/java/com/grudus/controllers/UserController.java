@@ -1,16 +1,24 @@
 package com.grudus.controllers;
 
+import com.grudus.dao.UserRepository;
+import com.grudus.entities.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class UserController {
 
-    @RequestMapping(value = "/dupa", method = RequestMethod.GET, produces = "application/json")
-    public String dupa() {
-        return "duupa";
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @RequestMapping("/user={login}")
+    public User userData(@PathVariable("login") String login) {
+        return userRepository.findByLogin(login).orElseThrow(() -> new RuntimeException("Cannot find the user"));
     }
 }
