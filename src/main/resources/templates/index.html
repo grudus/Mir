@@ -4,11 +4,12 @@
 
     <link href="../static/css/index.css" th:href="@{/css/index.css}" rel="stylesheet" type="text/css"/>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css' />
-    <script src="../static/js/index.js" th:src="@{/js/index.js}"></script>
+
     <meta charset="UTF-8" />
     <title>Main</title>
 </head>
 <body>
+
 
 <div id="main_top_div">
     <div id="left_side"></div>
@@ -24,7 +25,6 @@
         </ul>
     </div>
 </div>
-
 <div class="writing_message">
     <form method="post" id="adding_message">
         <textarea placeholder="message..." style="resize: none" name="message"></textarea>
@@ -38,6 +38,10 @@
             <p>anon</p>
             <p>13.13.2015 13:42</p>
         </div>
+        <div class="points">
+            <div class="plus">5</div>
+            <div class="minus">2</div>
+        </div>
         <div class="actual_message">
             <p> <a href="/tag/seba">#seba</a>  <a href="/tag/mati">#mati</a> <a href="/tag/kwadrat">#kwadrat</a>
                 <br/> His palms are spaghetti, knees weak, arms spaghetti
@@ -47,6 +51,8 @@
 </div>
 
 </body>
-
-<script>load()</script>
+<script src="../static/js/index.js" th:src="@{/js/index.js}"></script>
+<script>
+    load()
+</script>
 </html>

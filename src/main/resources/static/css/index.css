@@ -96,12 +96,34 @@ li > a:hover {
     background-color: #1DAD9B;
 }
 
-.who_and_when {
+.who_and_when, .points {
     text-align: center;
 }
 
-.who_and_when > p{
+.who_and_when > p, .points > div {
     display: inline;
+    padding: 0 .1em 0 .1em;
+}
+
+.plus {
+    border: solid green;
+}
+
+.plus:hover {
+    cursor: pointer;
+    background-color: green;
+    color: white;
+}
+
+
+.minus:hover {
+    cursor: pointer;
+    background-color: red;
+    color: white;
+}
+
+.minus {
+    border: solid red;
 }
 
 .actual_message {

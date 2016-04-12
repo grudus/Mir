@@ -12,4 +12,9 @@ public class StaticController {
         return "index";
     }
 
+    @RequestMapping(value = "/login", method = RequestMethod.GET, produces = "text/html")
+    public String goToLoginHtml() {
+        return "login";
+    }
+
 }
