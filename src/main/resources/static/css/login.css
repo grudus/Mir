@@ -1,0 +1,39 @@
+body {
+    background-color: #FCFFC1;
+    margin: 0;
+    padding: 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+div {
+    width: 60%;
+    margin: 10em auto 0 auto;
+    padding: 0 0 3em 0;
+    border: solid #346357;
+    text-align: center;
+}
+
+form {
+    margin-top: 1em;
+}
+
+input {
+    font-size: 1.5em;
+    margin-bottom: .5em;
+    width: 50%;
+}
+
+#button, #signup {
+    padding: .75em 2em .75em 2em;
+    font-size: 1em;
+    margin-top: 1em;
+    width: 25%;
+}
+
+.bad_login {
+    border: solid red;
+}
+
+.good_login {
+    border: solid green;
+}

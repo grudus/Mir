@@ -2,8 +2,15 @@ package com.grudus.controllers;
 
 import com.grudus.dao.MessageRepository;
 import com.grudus.entities.Message;
+import com.grudus.help.Login;
 import com.grudus.help.MessageHelp;
+import com.grudus.help.UserAndMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +23,13 @@ import java.util.*;
 public class MessageController {
 
     private final MessageRepository messageRepository;
+    private Login loginHelper;
+
+    @Autowired
+    @Qualifier("login")
+    public void setLoginHelper(Login loginHelper) {
+        this.loginHelper = loginHelper;
+    }
 
     @Autowired
     public MessageController(MessageRepository messageRepository) {
@@ -24,8 +38,21 @@ public class MessageController {
 
 
     @RequestMapping(value = "/dupa", method = RequestMethod.GET)
-    public List<Message> dupa() {
-        return messageRepository.findAll();
+    public UserAndMessages dupa() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserAndMessages toReturn = new UserAndMessages();
+        authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).forEach(System.out::println);
+        if (authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                // In our case user can only be USER or ANONYMOUS
+                .anyMatch(n -> n.equals("ROLE_USER"))) {
+            toReturn.setUser(((User)authentication.getPrincipal()).getUsername());
+        }
+        toReturn.setMessages(messageRepository.findAll());
+        //TODO change it to something else
+        loginHelper.setCurrentState(Login.OK);
+        return toReturn;
     }
 
 

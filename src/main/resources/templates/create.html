@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <link href="../static/css/create.css" th:href="@{/css/create.css}" rel="stylesheet" type="text/css"/>
+    <link href="../static/css/login.css" th:href="@{/css/login.css}" rel="stylesheet" type="text/css"/>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css' />
+    <meta charset="UTF-8" />
+    <title>Create an account</title>
+</head>
+<body>
+<input id="csrf" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+<div id="create">
+    <h2>Create an account</h2>
+
+    <form id="form">
+        <input id="login" name="login" type="text" maxlength="32" placeholder="Login" onchange="checkConditions('login')" /> <br />
+        <input id="password" name="password" type="password" maxlength="32" placeholder="password" onchange="checkConditions('password')"/> <br />
+        <input id="confirm" name="confirm" type="password" maxlength="32" placeholder="Confirm password" onchange="checkConditions('confirm')" /> <br />
+        <input id="email" name="email" type="email" maxlength="32" placeholder="email" onchange="checkConditions('email')" /> <br />
+        <button type="button" id="button" style="width: 50%" onclick="createAccount()" disabled="disabled">Create</button>
+    </form>
+
+</div>
+
+</body>
+<script src="../static/js/create.js" th:src="@{/js/create.js}"></script>
+</html>

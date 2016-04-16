@@ -2,6 +2,7 @@
 console.log("Javascript works");
 var mainURL = "/dupa";
 var allMessagesDiv = document.getElementById("all_messages");
+var user = "anonymous";
 
 var actualLenght = 0;
 
@@ -10,27 +11,42 @@ function load() {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {
+            var userAndMessages = (JSON.parse(request.responseText));
             console.log("Response: " + request.responseText);
-            refreshMessages(JSON.parse(request.responseText), actualLenght);
+            user = userAndMessages.user;
+            aboutUserStuff();
+            refreshMessages(userAndMessages.messages, actualLenght);
         }
     };
     request.open("GET", mainURL, true);
     request.send();
 }
 
+function aboutUserStuff() {
+    if (user.localeCompare("anonymous") === 0) console.log("NIe ma usera");
+    else {
+        console.log("Witam, " + user);
+        var loginA = document.getElementById("login_link");
+        loginA.innerHTML = "LOGOUT";
+        loginA.setAttribute("href", "/logout");
+        document.getElementById("my_profile_link").setAttribute("href", "/" + user);
+    }
+}
+
 function sendMessage() {
     var messageForm = document.getElementById("adding_message");
     var message = messageForm.children[0].value;
 
-    var arr = {"message":message, "author":"anon"};
 
     var request = new XMLHttpRequest();
-    var params = "message=" + encodeURIComponent(message) +
-        "&author=anon";
-    request.open("POST", mainURL, true);
+    var params = "message=" + encodeURIComponent(message) + "&author=" +
+        (user.localeCompare("anonymous") == 0 ? "anon" : encodeURIComponent(user));
+    params += "&" + document.getElementById("csrf").getAttribute("name") + "=" + document.getElementById("csrf").value;
+    console.log("Przed postem mam " + params);
+    request.open("POST", "/dupa", true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(params);
-    load();
+    //load();
 
 }
 

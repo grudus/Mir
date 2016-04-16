@@ -9,17 +9,17 @@
     <title>Main</title>
 </head>
 <body>
-
+<input id="csrf" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
 <div id="main_top_div">
     <div id="left_side"></div>
     <div id="right_side">
         <ul>
             <li>
-                <a href="/mylogin">LOGIN</a>
+                <a id="login_link" href="/login">LOGIN</a>
             </li>
             <li>
-                <a href="/profile">MY PROFILE</a>
+                <a id="my_profile_link" href="/profile">MY PROFILE</a>
             </li>
 
         </ul>
