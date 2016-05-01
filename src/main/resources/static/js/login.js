@@ -6,14 +6,13 @@ function load() {
             if (request.status === 200) {
                 console.log("Response: " + request.responseText);
                 if (request.responseText.localeCompare("ok") !== 0) {
-                    var d = document.createElement("h2");
-                    d.innerHTML = "NO I CHUJ NO I CZES";
-                    document.body.appendChild(d);
+                    var div = document.getElementById("bad_login_info");
+                    div.setAttribute("class", "bad_login_info");
                 }
             }
         }
     };
-    request.open("GET", "/login", true);
+    request.open("GET", "/login.json", true);
     request.send();
 }
 

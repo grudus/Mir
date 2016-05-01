@@ -1,10 +1,9 @@
 package com.grudus.controllers;
 
 import com.grudus.dao.MessageRepository;
+import com.grudus.dao.UserRepository;
 import com.grudus.entities.Message;
-import com.grudus.help.Login;
-import com.grudus.help.MessageHelp;
-import com.grudus.help.UserAndMessages;
+import com.grudus.help.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
@@ -23,17 +22,23 @@ import java.util.*;
 public class MessageController {
 
     private final MessageRepository messageRepository;
-    private Login loginHelper;
+    private final UserRepository userRepository;
+    private final MongoOperationsImpl mongoOperations;
+    private LoginHelp loginHelper;
+    private WaitingUsersHelp waitingUsersHelp;
+    private MessageHelp messageHelp;
 
     @Autowired
     @Qualifier("login")
-    public void setLoginHelper(Login loginHelper) {
+    public void setLoginHelper(LoginHelp loginHelper) {
         this.loginHelper = loginHelper;
     }
 
     @Autowired
-    public MessageController(MessageRepository messageRepository) {
+    public MessageController(MessageRepository messageRepository, UserRepository userRepository, MongoOperationsImpl mongoOperations) {
         this.messageRepository = messageRepository;
+        this.userRepository = userRepository;
+        this.mongoOperations = mongoOperations;
     }
 
 
@@ -47,26 +52,48 @@ public class MessageController {
                 .map(GrantedAuthority::getAuthority)
                 // In our case user can only be USER or ANONYMOUS
                 .anyMatch(n -> n.equals("ROLE_USER"))) {
-            toReturn.setUser(((User)authentication.getPrincipal()).getUsername());
+            final String userName = ((User)authentication.getPrincipal()).getUsername();
+            final com.grudus.entities.User user = userRepository.findByLogin(userName).orElseThrow(() -> new RuntimeException("Can't find the user"));
+            toReturn.setUser(userName);
+            toReturn.setPlusMessageIds(user.getPlusMessageIds());
+            toReturn.setMinusMessageIds(user.getMinusMessageIds());
         }
         toReturn.setMessages(messageRepository.findAll());
-        //TODO change it to something else
-        loginHelper.setCurrentState(Login.OK);
+        loginHelper.setCurrentState(LoginHelp.OK);
         return toReturn;
     }
 
 
     @RequestMapping(value = "/dupa", method = RequestMethod.POST)
-    public String atera(@RequestParam String message, @RequestParam String author) {
-        System.out.println("wejszlo " + message + " - " + author);
+    public void saveNewMessage(@RequestParam String message, @RequestParam String author) {
         final LocalDateTime date = LocalDateTime.now();
         final ArrayList<String> tags = MessageHelp.findTags(message);
         final Message newMessage = new Message(message, tags, author, date, 0, 0);
 
         messageRepository.save(newMessage);
-        return "Wyszlo z posta";
-
     }
 
+    @RequestMapping(value = "/vote", method = RequestMethod.POST)
+    public void getVote(@RequestParam String id, @RequestParam int vote /*plus=1,minus=0*/, @RequestParam String user) {
+        if (!UserHelp.isLogged(user) || (vote != 0 && vote != 1) || messageRepository.findOne(id) == null) {
+            System.err.println("Cannot vote");
+            return;
+        }
+
+        System.out.println(user + " vote " + vote + " to message " + messageRepository.findOne(id).getMessage());
+        messageHelp.vote(id, messageRepository, user, userRepository, vote);
+    }
+
+
+    // ________ SETTERS ___________________
+    @Autowired
+    public void setWaitingUsersHelp(WaitingUsersHelp waitingUsersHelp) {
+        this.waitingUsersHelp = waitingUsersHelp;
+    }
+
+    @Autowired
+    public void setMessageHelp(MessageHelp messageHelp) {
+        this.messageHelp = messageHelp;
+    }
 }
 

@@ -15,10 +15,10 @@ function load() {
             console.log("Response: " + request.responseText);
             user = userAndMessages.user;
             aboutUserStuff();
-            refreshMessages(userAndMessages.messages, actualLenght);
+            refreshMessages(userAndMessages.messages, actualLenght, userAndMessages.plusMessageIds, userAndMessages.minusMessageIds);
         }
     };
-    request.open("GET", mainURL, true);
+    request.open("GET", "/dupa.json", true);
     request.send();
 }
 
@@ -62,7 +62,7 @@ function getDateFromJavaObject(timeObject) {
     return time;
 }
 
-function refreshMessages(messagesArray, howMany) {
+function refreshMessages(messagesArray, howMany, plusesID, minusesID) {
     howMany = howMany | 0;
     if (!messagesArray) return;
     var length = messagesArray.length;
@@ -91,12 +91,28 @@ function refreshMessages(messagesArray, howMany) {
         pointsDiv.setAttribute("class", "points");
 
         var pluses = document.createElement("div");
-        pluses.setAttribute("class", "plus");
+
+        if (plusesID != null && plusesID.indexOf(object._id) > -1)
+            pluses.setAttribute("class", "plus_voted");
+
+        else {
+            pluses.setAttribute("class", "plus");
+        }
+
         pluses.innerHTML = object.plus;
 
+
         var minuses = document.createElement("div");
-        minuses.setAttribute("class", "minus");
+        if (minusesID != null && minusesID.indexOf(object._id) > -1)
+            minuses.setAttribute("class", "minus_voted");
+
+
+        else {
+            minuses.setAttribute("class", "minus");
+        }
+
         minuses.innerHTML = object.minus;
+
 
         pointsDiv.appendChild(pluses);
         pointsDiv.appendChild(minuses);
@@ -116,4 +132,32 @@ function refreshMessages(messagesArray, howMany) {
             allMessagesDiv.children[0]);
 
     }
+
+    //It doesn't look good ;/
+    var onemessages = document.getElementsByClassName("one_message");
+    for (i = howMany; i < length; i++) {
+        const id = messagesArray[length-1-i]._id;
+        const plusDiv = onemessages[i].children[1].children[0];
+        const minusDiv = onemessages[i].children[1].children[1];
+        if (plusesID.indexOf(id) > -1 || minusesID.indexOf(id) > -1) continue;
+        onemessages[i].children[1].children[0].onclick = function () {
+            vote('plus', id, plusDiv);
+        };
+        onemessages[i].children[1].children[1].onclick = function() {vote('minus',  id, minusDiv); };
+    }
+}
+
+function vote(pom, _id, div) {
+    div.innerHTML = parseInt(div.innerHTML)+1;
+    div.setAttribute("class", pom +"_voted");
+    div.onclick = null;
+    console.log("mam id " + _id);
+
+    var request = new XMLHttpRequest();
+    var params = "id=" + _id + "&vote=" + (pom == "minus" ? 0 : 1) + "&user=" + user;
+    params += "&" + document.getElementById("csrf").getAttribute("name") + "=" + document.getElementById("csrf").value;
+    request.open("POST", "/vote", true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.send(params);
+
 }

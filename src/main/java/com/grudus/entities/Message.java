@@ -1,15 +1,18 @@
 package com.grudus.entities;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Document(collection = "messages")
 public class Message {
+    @Field
+    @Id
+    private String _id;
+
     @Field
     private String message;
     @Field
@@ -78,6 +81,20 @@ public class Message {
 
     public void setMinus(Integer minus) {
         this.minus = minus;
+    }
+
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public void vote(final int how) {
+        if (how == 0) minus++;
+        else plus++;
     }
 
     @Override

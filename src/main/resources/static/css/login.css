@@ -34,6 +34,14 @@ input {
     border: solid red;
 }
 
+.hidden {
+    display: none;
+}
+
+#bad_login_info {
+    text-align: center;
+}
+
 .good_login {
     border: solid green;
 }

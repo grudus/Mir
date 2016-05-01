@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-@Service
+@Service("userService")
 @Transactional
 public class UserSecurityService implements UserDetailsService {
 

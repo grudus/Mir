@@ -115,6 +115,12 @@ li > a:hover {
     color: white;
 }
 
+.plus_voted {
+    border: solid white;
+    background-color: green;
+    color: white;
+}
+
 
 .minus:hover {
     cursor: pointer;
@@ -124,6 +130,12 @@ li > a:hover {
 
 .minus {
     border: solid red;
+}
+
+.minus_voted {
+    border: solid white;
+    color: white;
+    background-color: red;
 }
 
 .actual_message {
