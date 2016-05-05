@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <link href="../static/css/user.css" th:href="@{/css/user.css}" rel="stylesheet" type="text/css"/>
+    <link href="../static/css/index.css" th:href="@{/css/index.css}" rel="stylesheet" type="text/css"/>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css' />
+
+
+    <meta charset="UTF-8" />
+    <title>User</title>
+</head>
+<body>
+<input id="csrf" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+<div id="main_top_div">
+    <div id="left_side"></div>
+    <div id="right_side">
+        <ul>
+            <li>
+                <a id="login_link" href="/logout">LOGOUT</a>
+            </li>
+            <li>
+                <a id="my_profile_link" href="/dupa">HOME</a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+<div id="user_info">
+    <div class="remove_div" onclick="removeUser()">X</div>
+    <h2 id="login_text">null</h2>
+</div>
+
+<div id="all_messages">
+<!--    <div class="one_message">
+        <div class="who_and_when">
+            <p>13.13.2015 13:42</p>
+        </div>
+        <div class="actual_message">
+            <p> <a href="/tag/seba">#seba</a>  <a href="/tag/mati">#mati</a> <a href="/tag/kwadrat">#kwadrat</a>
+                <br/> His palms are spaghetti, knees weak, arms spaghetti
+                There's vomit on his spaghetti already: mom's spaghetti </p>
+        </div>
+    </div>-->
+</div>
+
+
+</body>
+<script src="../static/js/user.js" th:src="@{/js/user.js}"></script>
+</html>

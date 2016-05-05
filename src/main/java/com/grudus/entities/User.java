@@ -1,6 +1,8 @@
 package com.grudus.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.grudus.help.MessageHelp;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -11,7 +13,13 @@ import java.util.List;
 public class User {
 
     @Field
-    private String login, password, email;
+    @Id
+    private String _id;
+    @Field
+    private String login, email;
+    @Field
+    @JsonIgnore
+    private String password;
     @Field
     private List<String> plusMessageIds, minusMessageIds;
 
@@ -73,6 +81,14 @@ public class User {
 
     public void setMinusMessageIds(List<String> minusMessageIds) {
         this.minusMessageIds = minusMessageIds;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public void vote(final String id, final int voteType, final boolean isUp) {

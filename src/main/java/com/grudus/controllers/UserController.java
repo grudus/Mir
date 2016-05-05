@@ -6,12 +6,8 @@ import com.grudus.dao.WaitingUserRepository;
 import com.grudus.entities.Message;
 import com.grudus.entities.User;
 import com.grudus.entities.WaitingUser;
-import com.grudus.help.EmailSender;
-import com.grudus.help.LoginHelp;
-import com.grudus.help.UserHelp;
-import com.grudus.help.WaitingUsersHelp;
+import com.grudus.help.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +21,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,19 +48,42 @@ public class UserController {
         emailSender = new EmailSender();
     }
 
-    @RequestMapping("/{user}")
-    public User userData(@PathVariable("user") String user) {
-        return userRepository.findByLogin(user).orElseThrow(() -> new RuntimeException("Cannot find the user"));
+    @RequestMapping(value = "/{login}", method = RequestMethod.GET)
+    public UserAndMessages userData(@PathVariable("login") String login, Principal principal) {
+        if (!userRepository.findByLogin(login).isPresent()) return null;
+        return new UserAndMessages(login, messageRepository.findByAuthor(login),
+                principal != null && principal.getName().equals(login));
+    }
+
+    //ta, powinno byc delete
+    @RequestMapping(value = "/{login}", method = RequestMethod.POST)
+    public void rmMessage(@RequestParam String id, @PathVariable("login") String login, Principal principal) {
+        System.out.println("post " + id);
+        if (principal == null || !principal.getName().equals(login))
+            System.err.println("User isn't online");
+
+        else messageRepository.delete(id);
+    }
+
+    @RequestMapping(value = "/{login}/removeAccount", method = RequestMethod.POST)
+    public void rmUser(@PathVariable("login") String login, Principal principal) {
+        if (principal == null || !principal.getName().equals(login))
+            System.err.println("Cannot remove the user " + login);
+        else {
+            userRepository.deleteByLogin(login);
+            List<Message> messages = messageRepository.findByAuthor(login);
+            messages.forEach(n -> messageRepository.delete(n));
+        }
     }
 
     @RequestMapping("/{login}/vote={pum}")
-    public List<Message> getVotedMessages(@PathVariable String login, @PathVariable String pum) {
-        if (!UserHelp.isLogged(login)) {
+    public List<Message> getVotedMessages(@PathVariable String login, @PathVariable String pum, Principal principal) {
+        if (principal == null || !principal.getName().equals(login)) {
             System.err.println(login + " isn't logged");
             return null;
         }
         if (!pum.equals("plus") && !pum.equals("minus")) {
-            System.err.println("/{user}/vote=[minus|plus]");
+            System.err.println("/{login}/vote=[minus|plus]");
             return null;
         }
         return pum.equals("plus") ? userRepository.findByLogin(login).get()
@@ -105,7 +125,6 @@ public class UserController {
             return;
         }
         WaitingUser waitingUser = new WaitingUser(login, passwordEncoder.encode(password), email, emailSender.getURL(), LocalDateTime.now());
-        waitingUsersHelp.addToQueue(waitingUser, waitingUserRepository);
         try {
             emailSender.send("Hello, " + login + ". To complete your registration click this link: http://localhost:8080/created-" + waitingUser.getKey(),
                     email);
@@ -114,7 +133,8 @@ public class UserController {
             System.err.println("Nie udalo sie wyslac wiadomosci na adres " + email);
             response.sendRedirect("/create");
         }
-        finally {response.sendRedirect("/dupa");}
+        waitingUsersHelp.addToQueue(waitingUser, waitingUserRepository);
+        response.sendRedirect("/dupa");
     }
 
     @RequestMapping(value = "/created-{key}")

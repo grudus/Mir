@@ -1,0 +1,23 @@
+#user_info {
+    margin: 1em auto 0 auto;
+    width: 50%;
+    text-align: center;
+    border: solid #346357;
+}
+
+.remove_div {
+    border: solid #346357;
+    border-right: none;
+    border-top: none;
+    margin: auto 0 auto 0;
+    text-align: center;
+    float: right;
+    clear: both;
+    padding: .2em;
+}
+
+.remove_div:hover {
+    cursor: pointer;
+    background-color: red;
+    color: #FCFFC1;
+}

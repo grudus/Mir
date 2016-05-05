@@ -6,6 +6,7 @@ import com.grudus.entities.Message;
 import com.grudus.help.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,7 +25,6 @@ public class MessageController {
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
-    private final MongoOperationsImpl mongoOperations;
     private LoginHelp loginHelper;
     private WaitingUsersHelp waitingUsersHelp;
     private MessageHelp messageHelp;
@@ -35,24 +36,17 @@ public class MessageController {
     }
 
     @Autowired
-    public MessageController(MessageRepository messageRepository, UserRepository userRepository, MongoOperationsImpl mongoOperations) {
+    public MessageController(MessageRepository messageRepository, UserRepository userRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
-        this.mongoOperations = mongoOperations;
     }
 
 
     @RequestMapping(value = "/dupa", method = RequestMethod.GET)
-    public UserAndMessages dupa() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public UserAndMessages dupa(Principal principal) {
         UserAndMessages toReturn = new UserAndMessages();
-        authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).forEach(System.out::println);
-        if (authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                // In our case user can only be USER or ANONYMOUS
-                .anyMatch(n -> n.equals("ROLE_USER"))) {
-            final String userName = ((User)authentication.getPrincipal()).getUsername();
+        if (principal != null) {
+            final String userName = principal.getName();
             final com.grudus.entities.User user = userRepository.findByLogin(userName).orElseThrow(() -> new RuntimeException("Can't find the user"));
             toReturn.setUser(userName);
             toReturn.setPlusMessageIds(user.getPlusMessageIds());
@@ -74,8 +68,9 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/vote", method = RequestMethod.POST)
-    public void getVote(@RequestParam String id, @RequestParam int vote /*plus=1,minus=0*/, @RequestParam String user) {
-        if (!UserHelp.isLogged(user) || (vote != 0 && vote != 1) || messageRepository.findOne(id) == null) {
+    public void getVote(@RequestParam String id, @RequestParam int vote /*plus=1,minus=0*/, @RequestParam String user, Principal principal) {
+        if (principal == null || !principal.getName().equals(user)
+                || (vote != 0 && vote != 1) || messageRepository.findOne(id) == null) {
             System.err.println("Cannot vote");
             return;
         }

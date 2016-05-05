@@ -115,6 +115,10 @@ li > a:hover {
     color: white;
 }
 
+.no_clickable_plus {
+    border: solid green;
+}
+
 .plus_voted {
     border: solid white;
     background-color: green;
@@ -129,6 +133,10 @@ li > a:hover {
 }
 
 .minus {
+    border: solid red;
+}
+
+.no_clickable_minus {
     border: solid red;
 }
 

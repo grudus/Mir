@@ -20,4 +20,7 @@ public class StaticController {
     @RequestMapping(value = "/create", method = RequestMethod.GET, produces = "text/html")
     public String goToCreateHtml() {return "create";}
 
+    @RequestMapping(value = "/{user}", method = RequestMethod.GET, produces = "text/html")
+    public String goToUserHtml() {return "user";}
+
 }

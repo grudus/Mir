@@ -46,6 +46,7 @@ function sendMessage() {
     request.open("POST", "/dupa", true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(params);
+    window.location = "/dupa";
     //load();
 
 }
@@ -113,6 +114,10 @@ function refreshMessages(messagesArray, howMany, plusesID, minusesID) {
 
         minuses.innerHTML = object.minus;
 
+        if (user == "anonymous") {
+            pluses.setAttribute("class", "no_clickable_plus");
+            minuses.setAttribute("class", "no_clickable_minus");
+        }
 
         pointsDiv.appendChild(pluses);
         pointsDiv.appendChild(minuses);
@@ -135,6 +140,7 @@ function refreshMessages(messagesArray, howMany, plusesID, minusesID) {
 
     //It doesn't look good ;/
     var onemessages = document.getElementsByClassName("one_message");
+    if (user == "anonymous") return;
     for (i = howMany; i < length; i++) {
         const id = messagesArray[length-1-i]._id;
         const plusDiv = onemessages[i].children[1].children[0];
