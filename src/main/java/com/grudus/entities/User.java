@@ -106,6 +106,34 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (_id != null ? !_id.equals(user._id) : user._id != null) return false;
+        if (login != null ? !login.equals(user.login) : user.login != null) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        if (plusMessageIds != null ? !plusMessageIds.equals(user.plusMessageIds) : user.plusMessageIds != null)
+            return false;
+        return minusMessageIds != null ? minusMessageIds.equals(user.minusMessageIds) : user.minusMessageIds == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = _id != null ? _id.hashCode() : 0;
+        result = 31 * result + (login != null ? login.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (plusMessageIds != null ? plusMessageIds.hashCode() : 0);
+        result = 31 * result + (minusMessageIds != null ? minusMessageIds.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "User{" +
                 "login='" + login + '\'' +

@@ -60,13 +60,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/dupa").permitAll()
                 .antMatchers("/create").permitAll()
                 .antMatchers("/admin").hasRole("ADMIN")
-                .and()
+                .antMatchers("/{login}/*").hasRole("USER")
+/*                .and()
                 .formLogin().loginPage("/login")
                 .failureUrl("/err")
                 .defaultSuccessUrl("/dupa")
-                .permitAll()
-        .and().csrf().csrfTokenRepository(csrfTokenRepository())
-        .and().exceptionHandling().accessDeniedPage("/logout");
+                .permitAll()*/
+                .and().csrf().csrfTokenRepository(csrfTokenRepository())
+        /*.and().exceptionHandling().accessDeniedPage("/error")*/;
     }
 
     private CsrfTokenRepository csrfTokenRepository()

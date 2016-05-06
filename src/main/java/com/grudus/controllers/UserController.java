@@ -6,13 +6,17 @@ import com.grudus.dao.WaitingUserRepository;
 import com.grudus.entities.Message;
 import com.grudus.entities.User;
 import com.grudus.entities.WaitingUser;
+import com.grudus.error.UserNotFoundException;
 import com.grudus.help.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +52,14 @@ public class UserController {
         emailSender = new EmailSender();
     }
 
+
     @RequestMapping(value = "/{login}", method = RequestMethod.GET)
-    public UserAndMessages userData(@PathVariable("login") String login, Principal principal) {
-        if (!userRepository.findByLogin(login).isPresent()) return null;
+    public UserAndMessages userData(@PathVariable("login") String login, Principal principal, HttpServletResponse response) throws UserNotFoundException {
+        System.out.println("lohin w rest");
+        if (!userRepository.findByLogin(login).isPresent()) {
+//            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            throw new UserNotFoundException(login);
+        }
         return new UserAndMessages(login, messageRepository.findByAuthor(login),
                 principal != null && principal.getName().equals(login));
     }
@@ -68,7 +77,7 @@ public class UserController {
     @RequestMapping(value = "/{login}/removeAccount", method = RequestMethod.POST)
     public void rmUser(@PathVariable("login") String login, Principal principal) {
         if (principal == null || !principal.getName().equals(login))
-            System.err.println("Cannot remove the user " + login);
+            throw new UserNotFoundException(login);
         else {
             userRepository.deleteByLogin(login);
             List<Message> messages = messageRepository.findByAuthor(login);
@@ -79,8 +88,7 @@ public class UserController {
     @RequestMapping("/{login}/vote={pum}")
     public List<Message> getVotedMessages(@PathVariable String login, @PathVariable String pum, Principal principal) {
         if (principal == null || !principal.getName().equals(login)) {
-            System.err.println(login + " isn't logged");
-            return null;
+            throw new UserNotFoundException(login);
         }
         if (!pum.equals("plus") && !pum.equals("minus")) {
             System.err.println("/{login}/vote=[minus|plus]");
