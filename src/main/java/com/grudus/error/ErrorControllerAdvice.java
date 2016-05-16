@@ -19,7 +19,6 @@ public class ErrorControllerAdvice {
     @ResponseBody
     String handleControllerException(HttpServletRequest request, Throwable ex, HttpServletResponse response) throws IOException {
         System.err.println("handleControllerException");
-//        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         return "bad";
     }
 

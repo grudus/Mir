@@ -17,7 +17,6 @@ public class WaitingUsersHelp {
     }
 
     public void addToQueue(WaitingUser user, WaitingUserRepository repository) {
-        System.out.println("JEZDEM");
         mongoOperations.addUserToQueue(user, repository);
     }
 }

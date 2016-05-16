@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,11 +58,15 @@ public class UserController {
     public UserAndMessages userData(@PathVariable("login") String login, Principal principal, HttpServletResponse response) throws UserNotFoundException {
         System.out.println("lohin w rest");
         if (!userRepository.findByLogin(login).isPresent()) {
-//            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             throw new UserNotFoundException(login);
         }
         return new UserAndMessages(login, messageRepository.findByAuthor(login),
                 principal != null && principal.getName().equals(login));
+    }
+
+    @RequestMapping("/users")
+    public Collection<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     //ta, powinno byc delete

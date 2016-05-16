@@ -98,6 +98,35 @@ public class Message {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message1 = (Message) o;
+
+        if (_id != null ? !_id.equals(message1._id) : message1._id != null) return false;
+        if (message != null ? !message.equals(message1.message) : message1.message != null) return false;
+        if (tags != null ? !tags.equals(message1.tags) : message1.tags != null) return false;
+        if (author != null ? !author.equals(message1.author) : message1.author != null) return false;
+        if (date != null ? !date.equals(message1.date) : message1.date != null) return false;
+        if (plus != null ? !plus.equals(message1.plus) : message1.plus != null) return false;
+        return minus != null ? minus.equals(message1.minus) : message1.minus == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = _id != null ? _id.hashCode() : 0;
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (author != null ? author.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (plus != null ? plus.hashCode() : 0);
+        result = 31 * result + (minus != null ? minus.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Message{" +
                 "message='" + message + '\'' +

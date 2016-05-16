@@ -23,13 +23,11 @@ public class MongoOperationsImpl {
     private MongoOperations mongoOperations;
 
     public void addUserToQueue(WaitingUser user, WaitingUserRepository repository) {
-        if (repository.count() > Properties.DATABASE_MAX_LENGTH) {
+        if (repository.count() > Properties.DATABASE_MAX_LENGTH-1) {
             Query query = new Query();
             query.limit(1);
             query.with(new Sort(Sort.Direction.ASC, "date"));
-            System.out.println("usuwamy " + mongoOperations.find(query, WaitingUser.class) );
             repository.delete(mongoOperations.find(query, WaitingUser.class));
-            System.out.println("Usunieto");
         }
         repository.save(user);
     }
